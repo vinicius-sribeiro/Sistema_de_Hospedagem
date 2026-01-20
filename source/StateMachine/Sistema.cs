@@ -1,10 +1,12 @@
-﻿using SistemaDeHospedagem.Telas;
+﻿using SistemaDeHospedagem.Application.Orchestration;
+using SistemaDeHospedagem.Application.Services;
+using SistemaDeHospedagem.Telas;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using static SistemaDeHospedagem.Enums.Enums;
+using static SistemaDeHospedagem.Application.Enums.Enums;
 
-namespace SistemaDeHospedagem
+namespace SistemaDeHospedagem.StateMachine
 {
     internal class Sistema
     {
@@ -13,17 +15,17 @@ namespace SistemaDeHospedagem
         internal static bool hasOptionSelected { get; set; }
         internal static eEstadoSistema EstadoAtual { get; set; }
         internal static eTelas TelaAtual { get; set; }
+        internal static Manager Manager { get; set; }
 
         static Sistema()
         {
             IsRunning = true;
             EstadoAtual = eEstadoSistema.Inicializando;     
-            Console.WriteLine("Sistema inicializado.");
+            Manager = new Manager(new ReservaService(), new QuartoService());
         }
 
         internal static void GerenciarEstados()
-        {
-            Console.WriteLine("Gerenciar estados.");
+        {            
             while (IsRunning)
             {
                 switch (EstadoAtual)

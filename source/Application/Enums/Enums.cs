@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SistemaDeHospedagem.Enums
+namespace SistemaDeHospedagem.Application.Enums
 {
     internal class Enums
     {

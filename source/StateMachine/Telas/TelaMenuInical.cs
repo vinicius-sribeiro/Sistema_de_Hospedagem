@@ -1,7 +1,8 @@
-﻿using System;
+﻿using SistemaDeHospedagem.StateMachine;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using static SistemaDeHospedagem.Enums.Enums;
+using static SistemaDeHospedagem.Application.Enums.Enums;
 
 namespace SistemaDeHospedagem.Telas
 {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using static SistemaDeHospedagem.Enums.Enums;
+using static SistemaDeHospedagem.Application.Enums.Enums;
 
-namespace SistemaDeHospedagem.Models
+namespace SistemaDeHospedagem.Domain.Entities
 {
     internal class Quarto
     {        

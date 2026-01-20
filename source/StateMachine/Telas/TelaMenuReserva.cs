@@ -1,16 +1,17 @@
-﻿using SistemaDeHospedagem.Helper;
-using SistemaDeHospedagem.Models;
+﻿using SistemaDeHospedagem.Domain.Entities;
+using SistemaDeHospedagem.Helper;
+using SistemaDeHospedagem.StateMachine;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
-using static SistemaDeHospedagem.Enums.Enums;
+using static SistemaDeHospedagem.Application.Enums.Enums;
 
 namespace SistemaDeHospedagem.Telas
 {
     internal class TelaMenuReserva : TelaBase
-    {
-        public Reserva Reserva { get; set; }
+    {        
+        private Reserva Reserva;
 
         public TelaMenuReserva(string? titulo) : base(titulo)
         {
@@ -56,7 +57,7 @@ namespace SistemaDeHospedagem.Telas
                 Console.WriteLine("------ Quartos ------\n");
                 Console.WriteLine("Lista de quartos disponiveis: \n");
 
-                List<Quarto>? quartos = Hotel.ListarQuartosDisponiveis();
+                List<Quarto>? quartos = Sistema.Manager.ListarQuartosDisponiveis();
 
                 if (quartos == null)
                 {
@@ -75,14 +76,14 @@ namespace SistemaDeHospedagem.Telas
 
                 int quartoID = ConsoleHelper.ReadValue<int>("\nDigite o Número do quarto desejado: ");
 
-                if (!Hotel.QuartoExist(quartoID) || Hotel.QuartoReservado(quartoID))
+                if (!Sistema.Manager.QuartoExist(quartoID) || Sistema.Manager.IsQuartoReservado(quartoID))
                 {
                     Console.WriteLine("\nQuarto não encontrado ou já reservado. Tente novamente.");
                     QualquerTeclaParaContinuar();
                     continue;
                 }
 
-                Quarto newQuarto = Hotel.GetQuartoById(quartoID);
+                Quarto? newQuarto = Sistema.Manager.GetQuartoByID(quartoID);
                 Reserva.Quarto = newQuarto;
 
                 // ---------------- Cadastro dos Hóspedes ----------------
@@ -144,9 +145,9 @@ namespace SistemaDeHospedagem.Telas
                 string confirmar = Console.ReadLine()!.ToUpper();
                 if (confirmar == "S")
                 {
-                    Reserva.Quarto.IsDisponivel = false;
+                    Reserva.Quarto!.IsDisponivel = false;
                     Reserva.AddHospedes(listHospedeTemp);
-                    Hotel.AddReserva(Reserva);
+                    Sistema.Manager.AdicionarReserva(Reserva);
                     Console.WriteLine("\nReserva confirmada com sucesso!");
                 }
                 else
@@ -164,7 +165,7 @@ namespace SistemaDeHospedagem.Telas
         {
             Console.WriteLine("------ LISTA DE RESERVAS ------\n");
 
-            List<Reserva>? listReserva = Hotel.ListarReservas();
+            List<Reserva>? listReserva = Sistema.Manager.ListarReservas();
 
             if (listReserva != null)
             {
@@ -187,7 +188,7 @@ namespace SistemaDeHospedagem.Telas
 
                 Console.WriteLine("\n-------- Lista das Reservas --------");
 
-                List<Reserva>? listReserva = Hotel.ListarReservas();
+                List<Reserva>? listReserva = Sistema.Manager.ListarReservas();
 
                 if (listReserva == null)
                 {
@@ -205,7 +206,7 @@ namespace SistemaDeHospedagem.Telas
 
                 int quartoID = ConsoleHelper.ReadValue<int>("\nDigite o N° do quarto reservado: ");
 
-                var reserva = Hotel.GetReservaByQuartoID(quartoID);
+                var reserva = Sistema.Manager.GetReservaByQuartoID(quartoID);
 
                 if (reserva == null)
                 {
@@ -213,7 +214,7 @@ namespace SistemaDeHospedagem.Telas
                 }
                 else
                 {
-                    Hotel.RemoverReserva(reserva);
+                    Sistema.Manager.RemoverReserva(reserva);
                     Console.Write("\nDeseja remover outra reserva? (S/N): ");
                 }
 

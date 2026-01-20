@@ -2,18 +2,16 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SistemaDeHospedagem.Models
+namespace SistemaDeHospedagem.Domain.Entities
 {
     internal class Reserva
-    {        
-        private Guid Id { get; set; }        
-        public int DiasReservados { get; set; }
-        private List<Hospede> Hospedes { get; set; }
+    {
         public Quarto? Quarto { get; set; }
+        public int DiasReservados { get; set; }
+        private List<Hospede> Hospedes { get; set; }        
 
         public Reserva()
-        {
-            Id = Guid.NewGuid();
+        {           
             Hospedes = new List<Hospede>();
         }
 

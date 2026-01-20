@@ -1,10 +1,11 @@
-﻿using SistemaDeHospedagem.Helper;
-using SistemaDeHospedagem.Models;
+﻿using SistemaDeHospedagem.Domain.Entities;
+using SistemaDeHospedagem.Helper;
+using SistemaDeHospedagem.StateMachine;
 using SistemaDeHospedagem.Telas;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using static SistemaDeHospedagem.Enums.Enums;
+using static SistemaDeHospedagem.Application.Enums.Enums;
 
 namespace SistemaDeHospedagem.Telas
 {
@@ -49,7 +50,7 @@ namespace SistemaDeHospedagem.Telas
 
                 int id = ConsoleHelper.ReadValue<int>("\nDigite o número do quarto: ");                          
 
-                if (Hotel.QuartoExist(id))
+                if (Sistema.Manager.QuartoExist(id))
                 {
                     Console.WriteLine("\nNúmero do Quarto já existe.");
 
@@ -64,7 +65,7 @@ namespace SistemaDeHospedagem.Telas
                     decimal valorDiaria = ConsoleHelper.ReadValue<decimal>("\nDigite o valor diário do quarto: ");
 
                     Quarto oQuarto = new Quarto(id, tipoQuarto, valorDiaria, capacidade);
-                    Hotel.AddQuarto(oQuarto);
+                    Sistema.Manager.AdicionarQuarto(oQuarto);
 
                     Console.Write("\nAdicionar mais Quartos? (S/N): ");
                 }
@@ -92,18 +93,25 @@ namespace SistemaDeHospedagem.Telas
             {
                 int id = ConsoleHelper.ReadValue<int>("Digite o Número do quarto: ");
 
-                bool response = Hotel.RemoverQuarto(id);
+                Quarto? quarto = Sistema.Manager.GetQuartoByID(id);
 
-                if (response)
+                if (quarto != null && !quarto.GetDisponibilidade())
                 {
-                    Console.WriteLine("Quarto removido com sucesso!");
-                    Console.WriteLine("Deseja remover mais Quartos? (S/N): ");
-                }
-                else
-                {
-                    Console.WriteLine("Quarto Inexistente ou Número inválido. Não foi possível remover.");
+                    Console.WriteLine("Quarto está ocupado. Não é possível remover.");
                     Console.WriteLine("Deseja tentar novamente? (S/N): ");
+                    string confirmarOcupado = Console.ReadLine()!.ToUpper();
+                    if (confirmarOcupado == "S")
+                    {
+                        Console.Clear();
+                        Console.WriteLine("------ REMOVER QUARTO ------\n");
+                        continue;
+                    }
+                    QualquerTeclaParaContinuar();
+                    Sistema.hasOptionSelected = false;
+                    break;
                 }
+
+                Sistema.Manager.RemoverQuarto(quarto!);                
 
                 string confirmar = Console.ReadLine()!.ToUpper();
 
@@ -124,7 +132,7 @@ namespace SistemaDeHospedagem.Telas
         {
             Console.WriteLine("------ LISTA DE QUARTOS ------\n");
 
-            List<Quarto>? listQuartos = Hotel.ListarQuartos();
+            List<Quarto>? listQuartos = Sistema.Manager.ListarQuartos();
 
             if (listQuartos != null)
             {

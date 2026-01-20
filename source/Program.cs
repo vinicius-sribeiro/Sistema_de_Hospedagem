@@ -1,7 +1,4 @@
-﻿using SistemaDeHospedagem.Models;
-using SistemaDeHospedagem.Telas;
-using static SistemaDeHospedagem.Enums.Enums;
-using static SistemaDeHospedagem.Sistema;
+﻿using static SistemaDeHospedagem.StateMachine.Sistema;
 
 Console.WriteLine("Seja Bem-Vindo ao sistema de Hospedagem");
 

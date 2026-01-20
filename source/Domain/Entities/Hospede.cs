@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SistemaDeHospedagem.Models
+namespace SistemaDeHospedagem.Domain.Entities
 {
     internal class Hospede
     {
